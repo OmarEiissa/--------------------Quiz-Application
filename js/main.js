@@ -1,0 +1,212 @@
+// Select Element
+let countSpan = document.querySelector(".quiz-info .count span");
+let bullets = document.querySelector(".bullets");
+let bulletsSpanContainer = document.querySelector(".bullets .spans");
+let quizArea = document.querySelector(".quiz-area");
+let answersArea = document.querySelector(".answers-area");
+let submitButton = document.querySelector(".submit-button");
+let resultsContainer = document.querySelector(".results");
+let countDownElement = document.querySelector(".countdown");
+
+// Set Options
+let currentIndex = 0;
+let rightAnswer = 0;
+let countDownInterval;
+
+function getQuestions() {
+  let myRequest = new XMLHttpRequest();
+
+  myRequest.onreadystatechange = function () {
+    if (this.readyState === 4 && this.status === 200) {
+      let questionsObject = JSON.parse(this.responseText);
+      let qCount = questionsObject.length;
+
+      // Create Bullets + Set Questions Count
+      createBullets(qCount);
+
+      // Add Question Data
+      addQuestionData(questionsObject[currentIndex], qCount);
+
+      // Click On Submit
+      submitButton.onclick = () => {
+        // Get Right Answer
+        let theRightAnswer = questionsObject[currentIndex].right_answer;
+
+        // Increase Index
+        currentIndex++;
+
+        // Check The Answer
+        checkAnswer(theRightAnswer, qCount);
+
+        // Remove Previous Questions
+        quizArea.innerHTML = "";
+        answersArea.innerHTML = "";
+
+        // Add Question Data
+        addQuestionData(questionsObject[currentIndex], qCount);
+
+        // Handle Bullets Class
+        handleBullets();
+
+        // Start Count Down
+        clearInterval(countDownInterval)
+        countDown(90, qCount);
+
+        // Show Results
+        showReasults(qCount);
+      };
+      // Start Count Down
+      countDown(90, qCount);
+    }
+  };
+
+  myRequest.open("GET", "../questions json/html_questions.json", true);
+  myRequest.send();
+}
+
+getQuestions();
+
+function createBullets(num) {
+  countSpan.innerHTML = num;
+
+  // Create Bullet
+  for (let i = 0; i < num; i++) {
+    // Create Span
+    let theBullet = document.createElement("span");
+
+    // Check If Its First Span
+    if (i === 0) {
+      theBullet.className = "on";
+    }
+
+    // Append Bullets To Main Bullet container
+    bulletsSpanContainer.appendChild(theBullet);
+  }
+}
+
+function addQuestionData(obj, count) {
+  if (currentIndex < count) {
+    // Create h2 Question Title
+    let questionTitle = document.createElement("h2");
+
+    // Create Question Text
+    let questionText = document.createTextNode(obj["title"]);
+
+    // Append Text To h2
+    questionTitle.appendChild(questionText);
+
+    // Append The h2 To The Quiz Area
+    quizArea.appendChild(questionTitle);
+
+    // Create The Answers
+    for (let i = 1; i <= 4; i++) {
+      // Create Main Answer Div
+      let mainDiv = document.createElement("div");
+
+      // Add Class To Main Div
+      mainDiv.className = "answers";
+
+      // Create Radio Input
+      let radioInput = document.createElement("input");
+
+      // Add Type + Name + id + Data-Attribute
+      radioInput.name = "question";
+      radioInput.type = "radio";
+      radioInput.id = `answer_${i}`;
+      radioInput.dataset.answer = obj[`answer_${i}`];
+
+      // Make First Option Selected
+      if (i === 1) {
+        radioInput.checked = true;
+      }
+
+      // Create Label
+      let theLabel = document.createElement("label");
+      // Add For Attribute
+      theLabel.htmlFor = `answer_${i}`;
+
+      // Create Label Text
+      let theLabelText = document.createTextNode(obj[`answer_${i}`]);
+      // Add The Text To Label
+      theLabel.appendChild(theLabelText);
+
+      // Append Input + Label To Main Div
+      mainDiv.appendChild(radioInput);
+      mainDiv.appendChild(theLabel);
+
+      // Append All Divs To Answers Area
+      answersArea.appendChild(mainDiv);
+    }
+  }
+}
+
+function checkAnswer(rAnswer, count) {
+  let answer = document.getElementsByName("question");
+  let theChoosenAnswer;
+
+  for (let i = 0; i < answer.length; i++) {
+    if (answer[i].checked) {
+      theChoosenAnswer = answer[i].dataset.answer;
+    }
+  }
+  if (rAnswer === theChoosenAnswer) {
+    rightAnswer++;
+  }
+}
+
+function handleBullets() {
+  let bulletsSpans = document.querySelectorAll(".bullets .spans span");
+  let arrayOfSpans = Array.from(bulletsSpans);
+  arrayOfSpans.forEach((span, index) => {
+    if (currentIndex === index) {
+      span.className = "on";
+    }
+  });
+}
+
+function showReasults(count) {
+  let theResults;
+  if (currentIndex === count) {
+    quizArea.remove();
+    answersArea.remove();
+    submitButton.remove();
+    bullets.remove();
+
+    if (rightAnswer > (count / 2 && rightAnswer < count)) {
+      theResults = `<span class = "good">Good</span>, ${rightAnswer} From ${count} Is Good`;
+    } else if (rightAnswer === count) {
+      theResults = `<span class = "perfect">Perfect</span>, All Answers Is Good`;
+    } else {
+      theResults = `<span class = "bad">Bad</span>, ${rightAnswer} From ${count}`;
+    }
+
+    resultsContainer.innerHTML = theResults;
+    resultsContainer.style.padding = "10px";
+    resultsContainer.style.backgroundColor = "white";
+    resultsContainer.style.marginTop = "10px";
+  }
+}
+
+function countDown(duration, count) {
+  if (currentIndex < count) {
+    let minutes, seconds;
+    countDownInterval = setInterval(function () {
+      minutes = parseInt(duration / 60);
+      seconds = parseInt(duration % 60);
+
+      minutes = minutes < 10 ? `0${minutes}` : minutes;
+      seconds = seconds < 10 ? `0${seconds}` : seconds;
+
+      countDownElement.innerHTML = `${minutes}:${seconds}`;
+
+      if (--duration < 0) {
+        clearInterval(countDownInterval);
+        submitButton.click()
+      }
+
+      if (duration < 30) {
+        countDownElement.style.color = "red"
+      }
+    }, 1000);
+  }
+}
