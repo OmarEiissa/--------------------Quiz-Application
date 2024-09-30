@@ -115,11 +115,6 @@ function addQuestionData(obj, count) {
       radioInput.id = `answer_${i}`;
       radioInput.dataset.answer = obj[`answer_${i}`];
 
-      // Make First Option Selected
-      if (i === 1) {
-        radioInput.checked = true;
-      }
-
       // Create Label
       let theLabel = document.createElement("label");
       // Add For Attribute
@@ -208,6 +203,17 @@ function countDown(duration, count) {
       if (--duration < 0) {
         clearInterval(countDownInterval);
         submitButton.click();
+
+        quizArea.remove();
+        answersArea.remove();
+        submitButton.remove();
+        bullets.remove();
+
+        let timeOutMessage = `<span class='bad'>Time's up!</span> You didn't finish in time. You answered ${rightAnswer} out of ${count} questions.`;
+        resultsContainer.innerHTML = timeOutMessage;
+        resultsContainer.style.padding = "10px";
+        resultsContainer.style.backgroundColor = "white";
+        resultsContainer.style.marginTop = "10px";
       }
     }, 1000);
   }
