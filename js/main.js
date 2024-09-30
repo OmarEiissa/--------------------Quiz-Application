@@ -49,14 +49,14 @@ function getQuestions() {
         handleBullets();
 
         // Start Count Down
-        clearInterval(countDownInterval)
-        countDown(90, qCount);
+        clearInterval(countDownInterval);
+        countDown(89, qCount);
 
         // Show Results
-        showReasults(qCount);
+        showResults(qCount);
       };
       // Start Count Down
-      countDown(90, qCount);
+      countDown(89, qCount);
     }
   };
 
@@ -134,7 +134,7 @@ function addQuestionData(obj, count) {
       mainDiv.appendChild(radioInput);
       mainDiv.appendChild(theLabel);
 
-      // Append All Divs To Answers Area
+      // Append All DivS To Answers Area
       answersArea.appendChild(mainDiv);
     }
   }
@@ -142,14 +142,14 @@ function addQuestionData(obj, count) {
 
 function checkAnswer(rAnswer, count) {
   let answer = document.getElementsByName("question");
-  let theChoosenAnswer;
+  let theChosenAnswer;
 
   for (let i = 0; i < answer.length; i++) {
     if (answer[i].checked) {
-      theChoosenAnswer = answer[i].dataset.answer;
+      theChosenAnswer = answer[i].dataset.answer;
     }
   }
-  if (rAnswer === theChoosenAnswer) {
+  if (rAnswer === theChosenAnswer) {
     rightAnswer++;
   }
 }
@@ -164,7 +164,7 @@ function handleBullets() {
   });
 }
 
-function showReasults(count) {
+function showResults(count) {
   let theResults;
   if (currentIndex === count) {
     quizArea.remove();
@@ -199,13 +199,15 @@ function countDown(duration, count) {
 
       countDownElement.innerHTML = `${minutes}:${seconds}`;
 
-      if (--duration < 0) {
-        clearInterval(countDownInterval);
-        submitButton.click()
+      if (duration < 30) {
+        countDownElement.classList.add("low-time");
+      } else if (duration > 30) {
+        countDownElement.classList.remove("low-time");
       }
 
-      if (duration < 30) {
-        countDownElement.style.color = "red"
+      if (--duration < 0) {
+        clearInterval(countDownInterval);
+        submitButton.click();
       }
     }, 1000);
   }
