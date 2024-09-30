@@ -233,6 +233,6 @@ function countDown(duration, count) {
 }
 
 function updateProgressBar() {
-  let progress = (currentIndex / countSpan.innerHTML) * 100; // حساب النسبة المئوية
-  document.querySelector(".progress").style.width = `${progress}%`; // تحديث عرض شريط التقدم
+  let progress = (currentIndex / countSpan.innerHTML) * 100;
+  document.querySelector(".progress").style.width = `${progress}%`;
 }
