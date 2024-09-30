@@ -7,6 +7,7 @@ let answersArea = document.querySelector(".answers-area");
 let submitButton = document.querySelector(".submit-button");
 let resultsContainer = document.querySelector(".results");
 let countDownElement = document.querySelector(".countdown");
+let progressBar = document.querySelector(".progress-bar");
 
 // Set Options
 let currentIndex = 0;
@@ -44,6 +45,9 @@ function getQuestions() {
 
         // Add Question Data
         addQuestionData(questionsObject[currentIndex], qCount);
+
+        // Update Progress Bar
+        updateProgressBar();
 
         // Handle Bullets Class
         handleBullets();
@@ -166,6 +170,7 @@ function showResults(count) {
     answersArea.remove();
     submitButton.remove();
     bullets.remove();
+    progressBar.remove();
 
     if (rightAnswer > (count / 2 && rightAnswer < count)) {
       theResults = `<span class = "good">Good</span>, ${rightAnswer} From ${count} Is Good`;
@@ -208,6 +213,7 @@ function countDown(duration, count) {
         answersArea.remove();
         submitButton.remove();
         bullets.remove();
+        progressBar.remove();
 
         let timeOutMessage = `<span class='bad'>Time's up!</span> You didn't finish in time. You answered ${rightAnswer} out of ${count} questions.`;
         resultsContainer.innerHTML = timeOutMessage;
@@ -217,4 +223,9 @@ function countDown(duration, count) {
       }
     }, 1000);
   }
+}
+
+function updateProgressBar() {
+  let progress = (currentIndex / countSpan.innerHTML) * 100; // حساب النسبة المئوية
+  document.querySelector(".progress").style.width = `${progress}%`; // تحديث عرض شريط التقدم
 }
