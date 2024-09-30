@@ -180,9 +180,10 @@ function showResults(count) {
       theResults = `<span class = "bad">Bad</span>, ${rightAnswer} From ${count}`;
     }
 
+    resultsContainer.style.display = "block";
     resultsContainer.innerHTML = theResults;
     resultsContainer.style.padding = "10px";
-    resultsContainer.style.backgroundColor = "white";
+    resultsContainer.style.backgroundColor = "#fff";
     resultsContainer.style.marginTop = "10px";
   }
 }
@@ -216,9 +217,10 @@ function countDown(duration, count) {
         progressBar.remove();
 
         let timeOutMessage = `<span class='bad'>Time's up!</span> You didn't finish in time. You answered ${rightAnswer} out of ${count} questions.`;
+        resultsContainer.style.display = "block";
         resultsContainer.innerHTML = timeOutMessage;
         resultsContainer.style.padding = "10px";
-        resultsContainer.style.backgroundColor = "white";
+        resultsContainer.style.backgroundColor = "#fff";
         resultsContainer.style.marginTop = "10px";
       }
     }, 1000);
