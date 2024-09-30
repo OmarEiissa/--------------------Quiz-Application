@@ -135,6 +135,11 @@ function addQuestionData(obj, count) {
 
       // Append All DivS To Answers Area
       answersArea.appendChild(mainDiv);
+
+      // Add click event on the Main Div
+      mainDiv.onclick = () => {
+        radioInput.checked = true; // Check the radio input
+      };
     }
   }
 }
