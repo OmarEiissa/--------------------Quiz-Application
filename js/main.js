@@ -13,6 +13,7 @@ let progressBar = document.querySelector(".progress-bar");
 let currentIndex = 0;
 let rightAnswer = 0;
 let countDownInterval;
+let isTimerStarted = false;
 
 function getQuestions() {
   let myRequest = new XMLHttpRequest();
@@ -52,19 +53,13 @@ function getQuestions() {
         // Handle Bullets Class
         handleBullets();
 
-        // Start Count Down
-        clearInterval(countDownInterval);
-        countDown(89, qCount);
-
         // Show Results
         showResults(qCount);
       };
-      // Start Count Down
-      countDown(89, qCount);
     }
   };
 
-  myRequest.open("GET", "/questions json/html_questions.json", true);
+  myRequest.open("GET", "../questions_json/html_questions.json", true);
   myRequest.send();
 }
 
@@ -139,6 +134,12 @@ function addQuestionData(obj, count) {
       // Add click event on the Main Div
       mainDiv.onclick = () => {
         radioInput.checked = true; // Check the radio input
+
+        // Start the timer only after the first answer is clicked
+        if (!isTimerStarted) {
+          countDown(89, count); // Start countdown
+          isTimerStarted = true; // Prevent it from starting again
+        }
       };
     }
   }
